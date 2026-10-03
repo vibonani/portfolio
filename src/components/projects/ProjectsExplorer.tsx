@@ -4,6 +4,9 @@ import { useState } from "react";
 import ProjectGrid from "@/components/projects/ProjectGrid";
 import { projectCategories, projects, type ProjectSummary } from "@/data/projects";
 
+// Categorias ainda sem conteúdo publicado: mostram aviso em vez dos cards
+const underMaintenance: ProjectSummary["category"][] = ["dados-processos", "solucoes-internas"];
+
 export default function ProjectsExplorer({
   initialCategory = projectCategories[0].value,
 }: {
@@ -34,16 +37,20 @@ export default function ProjectsExplorer({
       </div>
 
       <div className="mt-12">
-        <ProjectGrid
-          projects={filtered.map((project) => ({
-            title: project.title,
-            description: project.description,
-            categoryLabel: project.categoryLabel,
-            image: project.image,
-            tags: project.tags,
-            href: project.href,
-          }))}
-        />
+        {underMaintenance.includes(category) ? (
+          <p className="text-lg text-muted">Página em manutenção</p>
+        ) : (
+          <ProjectGrid
+            projects={filtered.map((project) => ({
+              title: project.title,
+              description: project.description,
+              categoryLabel: project.categoryLabel,
+              image: project.image,
+              tags: project.tags,
+              href: project.href,
+            }))}
+          />
+        )}
       </div>
     </div>
   );

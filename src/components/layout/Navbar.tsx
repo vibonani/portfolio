@@ -47,7 +47,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-background/90 backdrop-blur transition-transform duration-300 ${
+      className={`sticky top-0 z-50 pt-[env(safe-area-inset-top)] bg-background/90 backdrop-blur transition-transform duration-300 ${
         hidden && !open ? "-translate-y-[101%]" : "translate-y-0"
       }`}
     >

@@ -54,19 +54,23 @@ export default async function WebProjectPage({ params }: PageProps<"/web/[slug]"
           </p>
         </section>
 
-        <section className="mt-12 pb-12">
-          <h2 className="font-display text-2xl text-foreground">Ferramentas</h2>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
-            {project.tools.join(", ")}
-          </p>
-        </section>
+        {project.tools.length > 0 && (
+          <section className="mt-12 pb-12">
+            <h2 className="font-display text-2xl text-foreground">Ferramentas</h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
+              {project.tools.join(", ")}
+            </p>
+          </section>
+        )}
 
-        <section className="mt-12">
-          <h2 className="font-display text-2xl text-foreground">Galeria</h2>
-          <div className="mt-6">
-            <ImageGallery images={project.gallery} />
-          </div>
-        </section>
+        {project.gallery.length > 0 && (
+          <section className="mt-12">
+            <h2 className="font-display text-2xl text-foreground">Galeria</h2>
+            <div className="mt-6">
+              <ImageGallery images={project.gallery} />
+            </div>
+          </section>
+        )}
 
         {project.externalUrl && (
           <div className="mt-12">

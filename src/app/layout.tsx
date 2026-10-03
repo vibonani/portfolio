@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -11,6 +11,13 @@ const fontSans = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
 });
+
+// Barra de status e barras do navegador no celular acompanham o fundo preto do site
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  colorScheme: "dark",
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
