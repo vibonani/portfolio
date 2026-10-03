@@ -22,16 +22,24 @@ export default function Navbar() {
 
   useEffect(() => {
     let lastY = window.scrollY;
+    // Distância acumulada na direção atual: no celular a rolagem chega em passos de poucos px,
+    // então comparar só com o evento anterior nunca atingia o limite e o menu não sumia.
+    let travel = 0;
     const onScroll = () => {
-      const y = window.scrollY;
-      if (y < 80) {
-        setHidden(false);
-      } else if (y > lastY + 4) {
-        setHidden(true);
-      } else if (y < lastY - 4) {
-        setHidden(false);
-      }
+      const y = Math.max(0, window.scrollY);
+      const delta = y - lastY;
       lastY = y;
+      if (y < 80) {
+        travel = 0;
+        setHidden(false);
+        return;
+      }
+      if (delta === 0) return;
+      // Mudou de direção: recomeça a contagem
+      if ((delta > 0) !== (travel > 0)) travel = 0;
+      travel += delta;
+      if (travel > 12) setHidden(true);
+      else if (travel < -12) setHidden(false);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -40,7 +48,7 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 bg-background/90 backdrop-blur transition-transform duration-300 ${
-        hidden && !open ? "-translate-y-full" : "translate-y-0"
+        hidden && !open ? "-translate-y-[101%]" : "translate-y-0"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-8">

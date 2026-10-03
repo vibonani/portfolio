@@ -17,6 +17,8 @@ export default function Footer() {
             </p>
           </div>
 
+          {/* Mobile: Navegação e Redes lado a lado. Desktop (sm+): `contents` mantém o layout original */}
+          <div className="flex gap-12 sm:contents">
           <div className="flex flex-col gap-3">
             <p className="text-xs font-medium uppercase tracking-wide text-muted">
               Navegação
@@ -42,6 +44,7 @@ export default function Footer() {
             <a target="_blank" rel="noopener noreferrer" href={siteConfig.social.behance} className="text-sm text-foreground hover:text-accent">
               Behance
             </a>
+          </div>
           </div>
         </div>
 
