@@ -1,26 +1,167 @@
 @import "tailwindcss";
 
+/*
+  Sistema de design — Victória Bonani (portfólio)
+  Todas as cores e fontes centralizadas aqui para facilitar ajustes futuros.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  /* Base preta, editorial */
+  --background: #000000;
+  --surface: #0d0d0d;
+  --foreground: #f2efe9;
+  --muted: #a39d92;
+  --border: #2a2a2a;
+
+  /* Cor de destaque discreta (argila) */
+  --accent: #cc7a51;
+  --accent-foreground: #000000;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-ibm-plex-mono), monospace;
+  --font-body: var(--font-ibm-plex-mono), monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* Ruído (grain) sutil no fundo, fixo sobre toda a página */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+body::before {
+  opacity: 0.1;
+  mix-blend-mode: screen;
+}
+
+/* Seções em tela cheia, centralizadas (home) */
+.screen-section {
+  display: flex;
+  min-height: 80svh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--background);
+}
+
+/*
+  Transição entre seções: a seção que sai recua levemente na direção da rolagem
+  e a que entra surge em camadas (stagger). Só usa opacity e transform.
+*/
+.screen-section {
+  position: relative;
+  --shift: 1.5rem;
+}
+
+.screen-section > * {
+  opacity: 0;
+  transform: translate3d(0, var(--shift), 0) scale(0.985);
+  transition:
+    opacity 0.3s ease-in,
+    transform 0.3s ease-in;
+}
+
+/* Saiu por cima (rolando para baixo): recua para cima */
+.screen-section[data-side="above"] > * {
+  transform: translate3d(0, calc(var(--shift) * -0.6), 0) scale(0.985);
+}
+
+.screen-section[data-visible="true"] > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.screen-section[data-visible="true"] > :nth-child(2) { transition-delay: 0.08s; }
+.screen-section[data-visible="true"] > :nth-child(3) { transition-delay: 0.16s; }
+.screen-section[data-visible="true"] > :nth-child(n + 4) { transition-delay: 0.24s; }
+
+/* Mobile: movimento menor e sem stagger, para manter leveza */
+@media (max-width: 640px) {
+  .screen-section {
+    --shift: 0.75rem;
+    /* Seções mais próximas: altura segue o conteúdo, com respiro moderado */
+    min-height: 0;
+    padding-block: 2.5rem;
+  }
+
+  .screen-section[data-visible="true"] > :nth-child(n) {
+    transition-delay: 0s;
+  }
+}
+
+/* Primeira seção: ocupa a tela abaixo da barra de navegação, com o conteúdo centralizado nela */
+.screen-section.hero-section {
+  min-height: calc(100svh - 4.5rem);
+}
+
+/* Mobile: ocupa a tela inicial (a segunda seção não aparece), com o título um pouco mais abaixo */
+@media (max-width: 640px) {
+  .screen-section.hero-section {
+    min-height: calc(100svh - 4.5rem);
+    padding-block: 0;
+  }
+
+  /* Segunda seção ocupa a tela e fica centralizada, separada da primeira */
+  .hero-section + .screen-section {
+    padding-block: 0;
+    min-height: calc(100svh - 4.5rem);
+  }
+}
+
+.screen-section .flex-wrap {
+  justify-content: center;
+}
+
+/* Respeita usuários que preferem menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Sem deslocamento nem escala: só um fade */
+  .screen-section {
+    --shift: 0rem;
+  }
+
+  .screen-section > *,
+  .screen-section[data-side="above"] > * {
+    transform: none;
+  }
+}
+
+/* Foco visível e consistente */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
